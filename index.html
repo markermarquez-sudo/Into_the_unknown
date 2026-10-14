@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Into the Unknown</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .player-card {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+        .cover {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            background-color: #333;
+        }
+        h1 { font-size: 1.4rem; margin: 15px 0 5px 0; font-weight: 700; }
+        h2 { font-size: 1rem; color: #b3b3b3; margin: 0 0 20px 0; font-weight: 400; }
+        audio { width: 100%; margin-bottom: 20px; filter: invert(1); }
+        .playlist { text-align: left; list-style: none; padding: 0; margin: 0; }
+        .track {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .track.active { background: #1db954; color: #000; font-weight: 600; }
+        .track-num { width: 25px; color: #888; font-size: 0.9rem; }
+        .track.active .track-num { color: #000; }
+        .track-title { flex-grow: 1; font-size: 0.95rem; }
+        .hint { font-size: 0.8rem; color: #1db954; margin-bottom: 15px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="player-card">
+    <!-- Si subes una foto, asegúrate de que se llame portada.jpg en GitHub -->
+    <img src="portada.jpg" class="cover" alt="Portada">
+    
+    <h1 id="current-title">Cargando...</h1>
+    <h2>Into the Unknown</h2>
+    
+    <div class="hint">🔊 Sube el volumen para escuchar</div>
+
+    <audio id="audio-player" controls autoplay muted></audio>
+
+    <ul class="playlist">
+        <!-- Vinculados exactamente a los nombres reales de tus archivos en GitHub -->
+        <li class="track" data-file="Back to Forgetting.mp3" data-title="Back to Forgetting"><span class="track-num">1</span><span class="track-title">Back to Forgetting</span></li>
+        <li class="track" data-file="Ballerina.mp3" data-title="Ballerina"><span class="track-num">2</span><span class="track-title">Ballerina</span></li>
+        <li class="track" data-file="Haunting Me.mp3" data-title="Haunting Me"><span class="track-num">3</span><span class="track-title">Haunting Me</span></li>
+        <li class="track" data-file="Shapeshifter.mp3" data-title="Shapeshifter"><span class="track-num">4</span><span class="track-title">Shapeshifter</span></li>
+        <li class="track" data-file="Unknown.mp3" data-title="Unknown"><span class="track-num">5</span><span class="track-title">Unknown</span></li>
+        <li class="track" data-file="Wasted Love.mp3" data-title="Wasted Love"><span class="track-num">6</span><span class="track-title">Wasted Love</span></li>
+    </ul>
+</div>
+
+<script>
+    const player = document.getElementById('audio-player');
+    const currentTitle = document.getElementById('current-title');
+    const tracks = document.querySelectorAll('.track');
+    let currentIndex = 0;
+
+    function loadAndPlay(index) {
+        if (index >= tracks.length) return;
+        tracks.forEach(t => t.classList.remove('active'));
+        const currentTrack = tracks[index];
+        currentTrack.classList.add('active');
+        currentTitle.innerText = currentTrack.getAttribute('data-title');
+        player.src = encodeURIComponent(currentTrack.getAttribute('data-file')); // Evita fallos por los espacios en blanco
+        player.play().catch(e => console.log("Auto-play en espera de volumen"));
+    }
+
+    player.addEventListener('ended', () => {
+        currentIndex++;
+        if (currentIndex < tracks.length) {
+            player.muted = false; 
+            loadAndPlay(currentIndex);
+        }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => loadAndPlay(0));
+</script>
+
+</body>
+</html>
